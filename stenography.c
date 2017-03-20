@@ -1,8 +1,8 @@
 #include "stenography.h"
 
-char *readStegFrom(char *content) {
-
+char *readStegFrom(P3Image *content) {
+	return 0;
 }
-void writeStegTo(char *content, char *phrase) {
+void writeStegTo(P3Image *content, char *phrase) {
 
 }

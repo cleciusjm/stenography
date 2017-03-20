@@ -1,34 +1,31 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "stenography.h"
-#define MAX_NAME 256 /* tamanho maximo para nome de arquivo */
-#define MAX 1020 /* tamanho maximo para as matrizes e, consequentemente, para a figura, em pixels)*/
 /**
  * Lê um arquivo P3 como uma string
  */
-char *readP3File(char* path);
+P3Image *readP3File(char* path);
 /**
  * Escreve o conteudo em um arquivo P3
  */
-void writeP3File(char* path, char* content);
+void writeP3File(char* path, P3Image* content);
 
 int main() {
-	const inFile = "teste.bmp";
-	const outFile = "teste_out.bmp";
-	int *phrase = "Teste 123";
-	char *content = readP3File(inFile);
-	char *processedContent = writeStegTo(content, phrase);
-	writeP3File(outFile, processedContent);
+	const char *inFile = "teste.bmp";
+	const char *outFile = "teste_out.bmp";
+	char *phrase = "Teste 123";
+	P3Image *content = readP3File(inFile);
+	writeStegTo(content, phrase);
+	writeP3File(outFile, content);
 	puts("Mensagem escrita com sucesso");
-
 	return 0;
 }
 
-int *readP3File(char* path) {
+P3Image *readP3File(char *path) {
+	P3Image *image = malloc(sizeof(P3Image));
 	FILE *arq1;
 	char key[128];
-	int i, j, w, h, max;
-	int r, g, b;
+	int i, j;
 
 	arq1 = fopen(path, "r");
 	if (arq1 == NULL) {
@@ -43,22 +40,24 @@ int *readP3File(char* path) {
 		return 0;
 	}
 
-	fscanf(arq1, "%d %d %d", &w, &h, &max);
-	int size = h * w;
-	for (i = 0; i <= w - 1; i++) {
-		for (j = 0; j <= h - 1; j++) {
+	fscanf(arq1, "%d %d", &image->w, &image->h);
+	fscanf(arq1, "%d", &image->max);
 
-			fscanf(arq1, " %d %d %d ", &r, &g, &b); /* para analise de caracteres trocar printf pela funcao que ira analisar a mensagem*/
+	int size = image->h * image->w;
 
-			printf(" %d %c %d \w ", r, g, b);
-
-		}
+	image->data = malloc(sizeof(unsigned int) * size);
+	int tmp;
+	for (i = 0; i <= size - 1; i++) {
+		fscanf(arq1, "%d", &tmp); /* para analise de caracteres trocar printf pela funcao que ira analisar a mensagem*/
+		image->data[i] = tmp;
 	}
 	fclose(arq1);
 
-	return 0;
+	return image;
 }
 
-void writeP3File(char* path, char* content) {
-
+void writeP3File(char *path, P3Image *content) {
+	for (int i = 0; i < content->w * content->h; i++) {
+		printf("%d \n", content->data[i]);
+	}
 }
