@@ -60,5 +60,18 @@ int *readP3File(char* path) {
 }
 
 void writeP3File(char* path, char* content) {
+    FILE *fp;
+    //Abrir arquivo
+    fp = fopen(filename, "wb");
+    if (!fp) {
+         fprintf(stderr, "Não é possível abrir o arquivo '%s'\n", filename);
+         exit(1);
+    }
 
+    //Escreve o header
+    fprintf(fp, "P3\n");
+    fprintf(fp, "%d %d\n",img->w,img->h);
+    fprintf(fp, "%d\n",img->max);
+    fwrite(img->data, 3 * img->w, img->h, fp);
+    fclose(fp);
 }
