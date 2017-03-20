@@ -15,7 +15,7 @@ void writeP3File(char* path, char* content);
 int main() {
 	const inFile = "teste.bmp";
 	const outFile = "teste_out.bmp";
-	char *phrase = "Teste 123";
+	int *phrase = "Teste 123";
 	char *content = readP3File(inFile);
 	char *processedContent = writeStegTo(content, phrase);
 	writeP3File(outFile, processedContent);
@@ -24,10 +24,10 @@ int main() {
 	return 0;
 }
 
-char *readP3File(char* path) {
+int *readP3File(char* path) {
 	FILE *arq1;
 	char key[128];
-	int i, j, n, m, max;
+	int i, j, w, h, max;
 	int r, g, b;
 
 	arq1 = fopen(path, "r");
@@ -43,15 +43,17 @@ char *readP3File(char* path) {
 		return 0;
 	}
 
-	fscanf(arq1, "%d %d %d", &m, &n, &max);
-	for (i = 0; i <= n - 1; i++)
-		for (j = 0; j <= m - 1; j++) {
+	fscanf(arq1, "%d %d %d", &w, &h, &max);
+	int size = h * w;
+	for (i = 0; i <= w - 1; i++) {
+		for (j = 0; j <= h - 1; j++) {
 
 			fscanf(arq1, " %d %d %d ", &r, &g, &b); /* para analise de caracteres trocar printf pela funcao que ira analisar a mensagem*/
 
-			printf(" %d %c %d \n ", r, g, b);
+			printf(" %d %c %d \w ", r, g, b);
 
 		}
+	}
 	fclose(arq1);
 
 	return 0;
