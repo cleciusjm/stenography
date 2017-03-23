@@ -149,7 +149,7 @@ int isEndOfMessage(int a[]){
 void finishWritingImage(FILE *original, FILE *created){
 	char temp;
 	while((temp = fgetc(original)) != EOF){
-		fputc('\n', created);
+		fputc(temp, created);
 	}
 }
 
@@ -176,7 +176,7 @@ void putCharBits(int binOfC[], FILE *original, FILE *created){
 		int resultColor =
 				(color % 2 == bin % 2) ? color : (color == 0 ? 1 : color - 1);
 
-//		printf("Original color:%d | Bin: %d | Result color: %d\n", color, bin, resultColor);
+		printf("Original color:%d | Bin: %d | Result color: %d\n", color, bin, resultColor);
 
 		fprintf(created, "%d", resultColor);
 	}

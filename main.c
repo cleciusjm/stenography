@@ -13,7 +13,7 @@ int *readP3File(char* path);
 void writeP3File(char* path, char* content);
 
 int main() {
-	char *inFile = "img/example.ppm";
+	char *inFile = "img/imagem2.ppm";
 	char *message = "teste";
 
 	writeStegTo(inFile, message);
@@ -24,6 +24,7 @@ int main() {
 	char *decodedMessage = readStegFrom_v2(outFile);
 
 	printf("Read process complete.\n");
+	printf("(%s)", decodedMessage);
 
 
 

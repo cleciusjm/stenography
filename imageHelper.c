@@ -8,7 +8,7 @@ void copyHeader(FILE *original, FILE *created){
 
 	int count = 0;
 	char temp;
-	while((temp = fgetc(original)) != EOF && count < 4){
+	while((temp = fgetc(original)) != EOF && count < 3){
 		printf("%c", temp);
 
 		fputc(temp, created);
