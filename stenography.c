@@ -92,7 +92,10 @@ void putCharBits(int binOfC[], FILE *original, FILE *created){
 
 		int bin = *(binOfC + 7 -i);
 
-		int resultColor = (color %2 == bin) ? color : ( color == 0 ? 1 : color -1);
+		int resultColor =
+				(color % 2 == bin % 2) ? color : (color == 0 ? 1 : color - 1);
+
+//		printf("Original color:%d | Bin: %d | Result color: %d\n", color, bin, resultColor);
 
 		fprintf(created, "%d", resultColor);
 	}
