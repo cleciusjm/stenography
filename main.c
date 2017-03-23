@@ -14,9 +14,17 @@ void writeP3File(char* path, char* content);
 
 int main() {
 	char *inFile = "img/example.ppm";
-	const message = "teste";
+	char *message = "teste";
 
 	writeStegTo(inFile, message);
+
+	printf("Write process complete.\n");
+
+	char *outFile = "out.ppm";
+	char *decodedMessage = readStegFrom_v2(outFile);
+
+	printf("Read process complete.\n");
+
 
 
 

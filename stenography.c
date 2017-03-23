@@ -4,11 +4,71 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+char buildCharThroughBitArray(int a[]);
+
+int getByteArraySize(int a[]);
+
+int isEndOfMessage(int a[]);
+
 void finishWritingImage(FILE *original, FILE *created);
 
 void putCharBits(int binOfC[], FILE *original, FILE *created);
 
 int getMessageLength(char my_msg[]);
+
+char *readStegFrom_v2(char *filePath){
+	printf("P1");
+
+	FILE *imageWithMessage;
+	if((imageWithMessage = fopen(filePath, "r+")) == NULL) {
+		printf("Could not open image %s.\nAborting\n", filePath);
+	    return 0;
+	}
+
+	if(isImgOfP3Type(imageWithMessage)){
+		printf("Image is not a P3.\nAborting\n", filePath);
+		return 0;
+	}
+
+	int imgWidth = getImgWidth(imageWithMessage);
+	int imgHeight = getImgHeight(imageWithMessage);
+
+	skipImgColorDepth(imageWithMessage);
+
+	int charBitBufferPos = 0;
+	int charBitsBuffer[8];
+	int messagePos = 0;
+	char *message = malloc(sizeof(char) * 1024);
+
+	char temp;
+	int color;
+	while((temp = fgetc(imageWithMessage)) != EOF){
+		if(temp == ' ' || temp == '\n'){
+			continue;
+		}
+
+		ungetc(temp, imageWithMessage);
+
+		fscanf(imageWithMessage, "%d", &color);
+
+		charBitsBuffer[charBitBufferPos] = color % 2;
+
+		int byteArraysize = getByteArraySize(charBitsBuffer);
+		if(byteArraysize > 7){
+
+			if(isEndOfMessage(charBitsBuffer) == 0){
+				break;
+			}
+
+			char c = buildCharThroughBitArray(charBitsBuffer);
+
+			*(message + messagePos++) = c;
+		}
+
+	}
+
+	return message;
+}
 
 char *readStegFrom(FILE *fp) {
 	return 0;
@@ -55,12 +115,35 @@ int writeStegTo(char *filePath, char *message) {
 
 	finishWritingImage(originalImage, createdImage);
 
-	printf("Write process complete.\n");
-
   	fclose(originalImage);
   	fclose(createdImage);
 
 	return 1;
+}
+
+char buildCharThroughBitArray(int a[]){
+	return 'a';
+}
+
+int getByteArraySize(int a[]){
+	int size = 0;
+
+	for(int i=0 ; i<8 ; i++){
+		if(a[i] != '\0'){
+			size++;
+		}
+	}
+	return size;
+}
+
+int isEndOfMessage(int a[]){
+	int result = 1;
+	for(int i=0 ; i<8 ; i++){
+		if(a[i] == 1){
+			result = 0;
+		}
+	}
+	return result;
 }
 
 void finishWritingImage(FILE *original, FILE *created){
@@ -82,8 +165,6 @@ void putCharBits(int binOfC[], FILE *original, FILE *created){
 		if(temp == EOF){
 			break;
 		}
-
-		printf("Leitura Temp[%c]\n", temp);
 
 		ungetc(temp, original);
 
