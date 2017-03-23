@@ -6,20 +6,26 @@
 /**
  * Lê um arquivo P3 como uma string
  */
-char *readP3File(char* path);
+int *readP3File(char* path);
 /**
  * Escreve o conteudo em um arquivo P3
  */
 void writeP3File(char* path, char* content);
 
 int main() {
-	const inFile = "teste.bmp";
-	const outFile = "teste_out.bmp";
-	int *phrase = "Teste 123";
-	char *content = readP3File(inFile);
-	char *processedContent = writeStegTo(content, phrase);
-	writeP3File(outFile, processedContent);
-	puts("Mensagem escrita com sucesso");
+	char *inFile = "img/example.ppm";
+	const message = "teste";
+
+	writeStegTo(inFile, message);
+
+
+
+//	const outFile = "teste_out.bmp";
+//	int *phrase = "Teste 123";
+//	int *content = readP3File(inFile);
+//	char *processedContent = writeStegTo(content, phrase);
+//	writeP3File(outFile, processedContent);
+//	puts("Mensagem escrita com sucesso");
 
 	return 0;
 }
@@ -27,7 +33,6 @@ int main() {
 int *readP3File(char* path) {
 	FILE *arq1;
 	char key[128];
-	int i, j, w, h, max;
 	int r, g, b;
 
 	arq1 = fopen(path, "r");
@@ -43,35 +48,55 @@ int *readP3File(char* path) {
 		return 0;
 	}
 
+	int max, w, h;
 	fscanf(arq1, "%d %d %d", &w, &h, &max);
+
 	int size = h * w;
-	for (i = 0; i <= w - 1; i++) {
-		for (j = 0; j <= h - 1; j++) {
+	static int *retorno;
+
+	retorno = malloc(size * sizeof(int));
+
+	int pos = 0;
+	for (int i = 0; i < w; i++) {
+		for (int j = 0; j < h; j++) {
 
 			fscanf(arq1, " %d %d %d ", &r, &g, &b); /* para analise de caracteres trocar printf pela funcao que ira analisar a mensagem*/
+//
+//			printf("V1 %d %d %d \n ", r, g, b);
 
-			printf(" %d %c %d \w ", r, g, b);
+			*(retorno + pos++) = r;
+			*(retorno + pos++) = g;
+			*(retorno + pos++) = b;
 
+			int v1 = *(retorno + pos - 3);
+			int v2 = *(retorno + pos - 2);
+			int v3 = *(retorno + pos - 1);
+
+//			printf("V2 %d %d %d \n ", v1, v2, v3);
 		}
 	}
+	printf("Finalizou leitura");
+
 	fclose(arq1);
 
-	return 0;
+	return retorno;
 }
 
 void writeP3File(char* path, char* content) {
     FILE *fp;
     //Abrir arquivo
-    fp = fopen(filename, "wb");
+    fp = fopen(path, "wb");
     if (!fp) {
-         fprintf(stderr, "Não é possível abrir o arquivo '%s'\n", filename);
+         fprintf(stderr, "Não é possível abrir o arquivo '%s'\n", path);
          exit(1);
     }
 
+    fprintf(stderr, "Arquivo aberto '%s'\n", path);
+
     //Escreve o header
-    fprintf(fp, "P3\n");
-    fprintf(fp, "%d %d\n",img->w,img->h);
-    fprintf(fp, "%d\n",img->max);
-    fwrite(img->data, 3 * img->w, img->h, fp);
+//    fprintf(fp, "P3\n");
+//    fprintf(fp, "%d %d\n",img->w,img->h);
+//    fprintf(fp, "%d\n",img->max);
+//    fwrite(img->data, 3 * img->w, img->h, fp);
     fclose(fp);
 }
