@@ -54,7 +54,7 @@ char *readStegFrom_v2(char *filePath){
 
 		charBitsBuffer[charBitBufferPos++] = color % 2;
 
-		printf("Post %d, Color %d, Bit %d\n",charBitBufferPos,color, charBitsBuffer[charBitBufferPos -1]);
+//		printf("Post %d, Color %d, Bit %d\n",charBitBufferPos,color, charBitsBuffer[charBitBufferPos -1]);
 
 		if(charBitBufferPos > 7){
 
@@ -66,14 +66,23 @@ char *readStegFrom_v2(char *filePath){
 
 			*(message + messagePos++) = c;
 
-			printf("%c\n", c);
+//			printf("%c\n", c);
 
 			charBitBufferPos = 0;
 		}
 
 	}
 
-	return message;
+	char *response = malloc(sizeof(char) * messagePos);
+
+	printf("Message: ");
+	for(int i=0 ; i<messagePos ; i++){
+		*(response + i) = *(message + i);
+		printf("%c", *(message + i));
+	}
+	printf("\n");
+
+	return response;
 }
 
 char *readStegFrom(FILE *fp) {
@@ -101,7 +110,10 @@ int writeStegTo(char *filePath, char *message) {
 
 	copyHeader(originalImage, createdImage);
 
-	int messageLength = sizeof(message) / sizeof(char);
+//	int messageLength = sizeof(message) / sizeof(char);
+	int messageLength = getMessageLength(message);
+
+//	printf("Tamanho da Mensagem: %d \n", messageLength);
 
 	for(int i=0 ; i<messageLength ; i++){
 		char c = *(message + i);
@@ -129,8 +141,6 @@ int writeStegTo(char *filePath, char *message) {
 
 
 int myPow(int base,int power){
-
-
 	if(power == 0){
 		return 1;
 	}else if(power == 1){
@@ -155,8 +165,6 @@ char buildCharThroughBitArray(int a[]){
 			result += myPow(2, 7 -i);
 		}
 	}
-
-	printf("result %d\n", result);
 
 	return result;
 }
@@ -223,5 +231,5 @@ int getMessageLength(char my_msg[]) {
   while(my_msg[i] != '\0') {
     i++;
   }
-  return i * 8 + 8;
+  return i;
 }
