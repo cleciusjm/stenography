@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int myPow(int base,int power);
+
 char buildCharThroughBitArray(int a[]);
 
 int getByteArraySize(int a[]);
@@ -17,8 +19,6 @@ void putCharBits(int binOfC[], FILE *original, FILE *created);
 int getMessageLength(char my_msg[]);
 
 char *readStegFrom_v2(char *filePath){
-	printf("P1");
-
 	FILE *imageWithMessage;
 	if((imageWithMessage = fopen(filePath, "r+")) == NULL) {
 		printf("Could not open image %s.\nAborting\n", filePath);
@@ -34,11 +34,12 @@ char *readStegFrom_v2(char *filePath){
 	int imgHeight = getImgHeight(imageWithMessage);
 
 	skipImgColorDepth(imageWithMessage);
+	skipImgColorDepth(imageWithMessage);
 
 	int charBitBufferPos = 0;
 	int charBitsBuffer[8];
 	int messagePos = 0;
-	char *message = malloc(sizeof(char) * 1024);
+	char *message = malloc(sizeof(char) * 128);
 
 	char temp;
 	int color;
@@ -51,18 +52,23 @@ char *readStegFrom_v2(char *filePath){
 
 		fscanf(imageWithMessage, "%d", &color);
 
-		charBitsBuffer[charBitBufferPos] = color % 2;
+		charBitsBuffer[charBitBufferPos++] = color % 2;
 
-		int byteArraysize = getByteArraySize(charBitsBuffer);
-		if(byteArraysize > 7){
+		printf("Post %d, Color %d, Bit %d\n",charBitBufferPos,color, charBitsBuffer[charBitBufferPos -1]);
 
-			if(isEndOfMessage(charBitsBuffer) == 0){
+		if(charBitBufferPos > 7){
+
+			if(isEndOfMessage(charBitsBuffer) == 1){
 				break;
 			}
 
 			char c = buildCharThroughBitArray(charBitsBuffer);
 
 			*(message + messagePos++) = c;
+
+			printf("%c\n", c);
+
+			charBitBufferPos = 0;
 		}
 
 	}
@@ -121,8 +127,33 @@ int writeStegTo(char *filePath, char *message) {
 	return 1;
 }
 
+
+int myPow(int base,int power){
+	if(power == 0){
+		return 1;
+	}else if(power == 1){
+		return 2;
+	}
+
+	int result = 2;
+	for(int i= 0; i<(power -1) ; i++){
+		result *= 2;
+	}
+	return result;
+}
+
 char buildCharThroughBitArray(int a[]){
-	return 'a';
+	int result = 0;
+
+	for(int i=0 ; i<8 ; i++){
+		if(i == 7){
+			result += a[7];
+		}else if(a[i] == 1){
+			result += myPow(2, a[7 -i]);
+		}
+	}
+
+	return result;
 }
 
 int getByteArraySize(int a[]){
@@ -176,7 +207,7 @@ void putCharBits(int binOfC[], FILE *original, FILE *created){
 		int resultColor =
 				(color % 2 == bin % 2) ? color : (color == 0 ? 1 : color - 1);
 
-		printf("Original color:%d | Bin: %d | Result color: %d\n", color, bin, resultColor);
+//		printf("Original color:%d | Bin: %d | Result color: %d\n", color, bin, resultColor);
 
 		fprintf(created, "%d", resultColor);
 	}

@@ -24,7 +24,7 @@ int main() {
 	char *decodedMessage = readStegFrom_v2(outFile);
 
 	printf("Read process complete.\n");
-	printf("(%s)", decodedMessage);
+//	printf("(%s)", decodedMessage);
 
 
 
