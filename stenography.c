@@ -129,6 +129,8 @@ int writeStegTo(char *filePath, char *message) {
 
 
 int myPow(int base,int power){
+
+
 	if(power == 0){
 		return 1;
 	}else if(power == 1){
@@ -139,6 +141,7 @@ int myPow(int base,int power){
 	for(int i= 0; i<(power -1) ; i++){
 		result *= 2;
 	}
+
 	return result;
 }
 
@@ -149,9 +152,11 @@ char buildCharThroughBitArray(int a[]){
 		if(i == 7){
 			result += a[7];
 		}else if(a[i] == 1){
-			result += myPow(2, a[7 -i]);
+			result += myPow(2, 7 -i);
 		}
 	}
+
+	printf("result %d\n", result);
 
 	return result;
 }
