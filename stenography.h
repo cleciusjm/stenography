@@ -3,9 +3,7 @@
 #include <stdio.h>
 #define STEGANOGRAPHY_H_FILE
 
-char *readStegFrom_v2(char *filePath);
-
-char *readStegFrom(FILE *fp);
+char *readStegFrom(char *filePath);
 
 int writeStegTo(char *filePath, char *message);
 

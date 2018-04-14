@@ -11,10 +11,10 @@ int main() {
 	printf("Write process complete.\n");
 
 	char *outFile = "out.ppm";
-	char *decodedMessage = readStegFrom_v2(outFile);
+	char *decodedMessage = readStegFrom(outFile);
 
 	printf("Read process complete.\n");
-//	printf("(%s)", decodedMessage);
+	printf("(%s)", decodedMessage);
 
 	return 1;
 }
